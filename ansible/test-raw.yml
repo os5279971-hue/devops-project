@@ -1,0 +1,9 @@
+- name: 测试 raw 模块
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+    - name: 使用 raw 模块安装 git
+      raw: yum install -y git
+    - name: 使用 raw 模块安装 podman
+      raw: yum install -y podman

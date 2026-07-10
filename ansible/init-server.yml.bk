@@ -1,0 +1,14 @@
+---
+- name: 初始化服务器
+  hosts: local
+  tasks:
+    - name: 安装 podman（如果还没装）
+      dnf:
+        name: podman
+        state: present
+
+    - name: 确保 podman 服务在运行
+      systemd:
+        name: podman
+        state: started
+        enabled: no
