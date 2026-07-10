@@ -44,3 +44,14 @@ ansible/init-server.yml 使用 raw 模块解决 Python2 依赖问题，幂等执
 Prometheus + Grafana 监控 CPU、内存、磁盘、网络，配置告警阈值。
 Shell 脚本配合 Crontab 实现自动化备份、容器自愈、日志清理。
 详细踩坑记录见 CHANGELOG.md
+📈 项目演进历程
+第一阶段：ECS 环境搭建，Flask + Nginx + HTTPS 上线。
+第二阶段：MySQL 集成 + Redis 缓存防穿透，容器化改造。
+第三阶段：Podman/docker-compose 编排，Kubernetes YAML 编写及本地验证。
+第四阶段：Ansible Playbook 实现一键部署，Prometheus 监控上线，自动化脚本完善。
+第五阶段：项目整理、文档编写、GitHub 完善。
+🔮 后续可扩展方向
+Jenkins CI/CD 流水线（已规划 Jenkinsfile）
+EFK 日志采集系统
+MySQL 主从复制与 Redis 高可用
+应用滚动更新与灰度发布
