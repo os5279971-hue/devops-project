@@ -1,6 +1,7 @@
 from flask import Flask
 import pymysql
 import redis
+import time
 
 app = Flask(__name__)
 
@@ -9,7 +10,6 @@ DB_USER = 'yaoqi'
 DB_PASSWORD = 'Yaoqi123!'
 DB_NAME = 'yaoqi_db'
 
-# Redis 配置
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
 REDIS_PASSWORD = '123456'
@@ -33,10 +33,10 @@ def get_redis_client():
     )
     return r
 
+# ---------- 首页（保留原有缓存 + 数据库展示） ----------
 @app.route('/')
 def hello():
     try:
-        # 先查 Redis 缓存
         r = get_redis_client()
         cached_html = r.get('user_list_cache')
         if cached_html:
@@ -44,7 +44,6 @@ def hello():
 
         conn = get_db_connection()
         cursor = conn.cursor()
-
         cursor.execute("SELECT id, name, email, created_at FROM users ORDER BY id DESC")
         users = cursor.fetchall()
         cursor.execute("SELECT COUNT(*) FROM users")
@@ -64,14 +63,39 @@ def hello():
             html += f'<tr><td>{user[0]}</td><td>{user[1]}</td><td>{user[2]}</td><td>{user[3]}</td></tr>'
         html += '</table>'
 
-        # 缓存到 Redis，有效期 60 秒
         r.setex('user_list_cache', 60, html)
-
         return html
-
     except Exception as e:
         return f'数据库或 Redis 连接失败，错误信息：{str(e)}'
 
+# ---------- Redis 缓存加速演示接口（供截图用） ----------
+@app.route('/api/cache_demo')
+def cache_demo():
+    start = time.time()
+    r = get_redis_client()
+    cached = r.get('demo_cache')
+    if cached:
+        source = 'Redis（缓存命中，极快）'
+        data = cached
+    else:
+        source = 'MySQL（首次查询，较慢）'
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM users")
+        count = cursor.fetchone()[0]
+        conn.close()
+        data = str(count)
+        r.setex('demo_cache', 30, data)  # 缓存30秒
+    elapsed_ms = round((time.time() - start) * 1000, 2)
+    return f'''
+    <h1>缓存演示</h1>
+    <p>数据来源：{source}</p>
+    <p>用户总数：{data}</p>
+    <p>本次请求耗时：{elapsed_ms} 毫秒</p>
+    <p style="color:gray;">（30秒内再次访问将走 Redis 缓存，耗时极短）</p>
+    '''
+
+# ---------- 日志查看 ----------
 @app.route('/logs')
 def show_logs():
     import os

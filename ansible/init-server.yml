@@ -1,14 +1,12 @@
 ---
 - name: 初始化服务器
-  hosts: local
+  hosts: localhost          # 改成 localhost
+  connection: local         # 保留本机连接
   tasks:
     - name: 安装 podman（如果还没装）
-      dnf:
-        name: podman
-        state: present
-
+      raw: yum install -y podman   # 用 raw 模块，兼容 Python 版本
     - name: 确保 podman 服务在运行
       systemd:
         name: podman
         state: started
-        enabled: no
+        enabled: yes
