@@ -14,3 +14,15 @@
 | 自动化部署 | Ansible | Playbook 实现代码拉取、构建、部署全流程 |
 | 监控体系 | Prometheus + Node Exporter + Grafana | 服务器监控、仪表板、告警 |
 | 脚本自动化 | Shell + Crontab | MySQL 备份、容器监控、日志清理 |
+---
+
+## 🏗️ 系统架构
+
+```mermaid
+graph LR
+    User[用户浏览器] --> Nginx[Nginx :443]
+    Nginx --> Flask[Flask + Gunicorn :5000]
+    Flask --> MySQL[(MySQL 8.0)]
+    Flask --> Redis[(Redis 缓存)]
+    Prometheus[Prometheus] --> NodeExporter[Node Exporter]
+    Grafana[Grafana] --> Prometheus
