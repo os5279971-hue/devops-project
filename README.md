@@ -43,3 +43,11 @@ ansible/init-server.yml 使用 raw 模块解决 Python2 依赖问题，幂等执
 Prometheus + Grafana 监控 CPU、内存、磁盘、网络，配置告警阈值。
 Shell 脚本配合 Crontab 实现自动化备份、容器自愈、日志清理。
 详细踩坑记录见 CHANGELOG.md
+## ☸️ Kubernetes 编排验证
+
+编写了 Deployment + Service YAML（见 `k8s/k8s-demo.yaml`），在本地 Docker Desktop K8s 集群中部署 Nginx 应用：
+
+- **Deployment**：定义 2 个副本，保证高可用
+- **Service**：通过 NodePort 30080 暴露服务
+
+验证了 Pod 调度、副本控制、Service 发现等核心概念。
