@@ -16,12 +16,16 @@
 
 ```mermaid
 graph LR
-    User[用户浏览器] --> Nginx[Nginx :443]
+    User[用户浏览器] --> Nginx[Nginx 反向代理 :443]
     Nginx --> Flask[Flask + Gunicorn :5000]
     Flask --> MySQL[(MySQL 8.0)]
     Flask --> Redis[(Redis 缓存)]
     Prometheus[Prometheus] --> NodeExporter[Node Exporter]
     Grafana[Grafana] --> Prometheus
+    style Flask fill:#2d9,stroke:#333
+    style Nginx fill:#f96,stroke:#333
+    style MySQL fill:#58f,stroke:#333
+    style Redis fill:#f33,stroke:#333
 ```
 ### 模块说明
 Web 服务
