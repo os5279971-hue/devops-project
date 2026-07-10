@@ -22,4 +22,20 @@ graph LR
     Flask --> Redis[(Redis 缓存)]
     Prometheus[Prometheus] --> NodeExporter[Node Exporter]
     Grafana[Grafana] --> Prometheus
+```
 ### 模块说明
+Web 服务
+Flask 应用提供 /api/* 接口及 /logs 日志查看路由。
+Gunicorn 多进程启动，Nginx 反向代理并强制 HTTPS。
+数据库与缓存
+MySQL 存储用户数据，每日凌晨自动备份（保留 7 天）。
+Redis 实现查询缓存与防穿透策略，响应时间从 150ms 降至 5ms（缓存命中）。
+容器化与编排
+Dockerfile 构建应用镜像；docker-compose 编排 MySQL、Redis、Flask、Nginx。
+Kubernetes：编写 Deployment（2副本）+ NodePort（30080）YAML，并在本地集群验证。
+自动化部署
+ansible/init-server.yml 使用 raw 模块解决 Python2 依赖问题，幂等执行，适合生产环境更新。
+监控与自动化脚本
+Prometheus + Grafana 监控 CPU、内存、磁盘、网络，配置告警阈值。
+Shell 脚本配合 Crontab 实现自动化备份、容器自愈、日志清理。
+详细踩坑记录见 CHANGELOG.md
